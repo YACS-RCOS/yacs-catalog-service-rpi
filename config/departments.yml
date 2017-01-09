@@ -1,0 +1,129 @@
+departments:
+  - code: BIOL
+    name: Biology
+  - code: MATH
+    name: Mathematics
+  - code: CHEM
+    name: Chemistry
+  - code: PHYS
+    name: Physics
+  - code: BMED
+    name: Biomedical Engineering
+  - code: ECON
+    name: Economics
+  - code: PSYC
+    name: Psychology
+  - code: BCBP
+    name: Biochemistry and Biophysics
+  - code: ARTS
+    name: Arts
+  - code: CIVL
+    name: Civil Engineering
+  - code: ENGR
+    name: Core Engineering
+  - code: COMM
+    name: Communication
+  - code: CSCI
+    name: Computer Science
+  - code: DSES
+    name: Decision Sci & Engr. Systems
+  - code: ERTH
+    name: Earth and Environmental Science
+  - code: ESCI
+    name: Engineering Science
+  - code: EPOW
+    name: Electric Power Engineering
+  - code: ECSE
+    name: Electrical and Computer Systems Engineering
+  - code: GENL
+    name: General Institute Offerings
+  - code: IHSS
+    name: Interdisciplinary H&SS
+  - code: MGMT
+    name: Management
+  - code: LANG
+    name: Languages
+  - code: PHIL
+    name: Philosophy
+  - code: LITR
+    name: Literature
+  - code: STSH
+    name: Science and Technology Studies - Humanities
+  - code: STSS
+    name: Science and Technology Studies - Social Sciences
+  - code: MTLE
+    name: Materials Science and Engineering
+  - code: USAF
+    name: Aerospace Studies (Air Force ROTC)
+  - code: USAR
+    name: Military Science (Army ROTC)
+  - code: ISCI
+    name: Interdisciplinary Science
+  - code: USNA
+    name: Naval Science (Navy ROTC)
+  - code: WRIT
+    name: Writing
+  - code: EMBA
+    name: Management - EXEC MBA
+  - code: COOP
+    name: Cooperative Education
+  - code: MATP
+    name: Math Programming, Probability, and Statistics
+  - code: ARCH
+    name: Architecture
+  - code: MEAE
+    name: Mech. Eng, Aero Eng,&Mechanics
+  - code: IENV
+    name: Interdisciplinary Environmental
+  - code: ENVE
+    name: Environmental and Energy Engineering
+  - code: CHME
+    name: Chemical Engineering
+  - code: ADMN
+    name: Administrative Courses
+  - code: EXCH
+    name: Exchange
+  - code: ASTR
+    name: Astronomy
+  - code: METL
+    name: Metallurgy
+  - code: MPST
+    name: Math Prog, Prob & Math Stats
+  - code: ITEC
+    name: Information Technology
+  - code: BIOE
+    name: Bio - Med - Eng (H)
+  - code: LGHT
+    name: Lighting
+  - code: HLTH
+    name: Health Care Management (H)
+  - code: CISH
+    name: Computer Science (H)
+  - code: ZSPE
+    name: Systems and Power Engineering
+  - code: NSST
+    name: General Interdisciplinary
+  - code: URBN
+    name: Urban and Environmentl Studies
+  - code: ZANT
+    name: Anthropology
+  - code: ZCNS
+    name: Consortium
+  - code: ZHIS
+    name: History
+  - code: ZPHE
+    name: Physical Education
+  - code: ZPLS
+    name: Political Science
+  - code: ZSMI
+    name: Stat. Mgmt. & Info. Sciences
+  - code: ZSOC
+    name: Sociology
+  - code: MANE
+    name: Mechanical, Aerospace, and Nuclear Engineering
+  - code: COGS
+    name: Cognitive Science
+  - code: ISYE
+    name: Industrial and Systems Engineering
+  - code: ITWS
+    name: Information Technology and Web Science
