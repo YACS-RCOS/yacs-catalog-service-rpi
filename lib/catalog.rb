@@ -1,5 +1,8 @@
+require 'nokogiri'
+require 'open-uri'
+
 module Catalog
-  def get_sections
+  def sections
     uri = "https://sis.rpi.edu/reg/rocs/YACS_#{SEMESTER}.xml"
     sections = Nokogiri::XML(open(uri)).xpath("//CourseDB/SECTION")
     sections.map do |xml|
@@ -8,15 +11,15 @@ module Catalog
     end
   end
 
-  def get_courses
+  def courses
 
   end
 
-  def get_departments
-
+  def departments
+    get_schools[:schools].map {|s| s[:departments]}.flatten
   end
 
-  def get_schools
-
+  def schools
+    YAML.load(File.open('config/schools.yml'))
   end
 end
