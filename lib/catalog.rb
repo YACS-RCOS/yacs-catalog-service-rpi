@@ -2,6 +2,10 @@ require 'nokogiri'
 require 'open-uri'
 
 module Catalog
+  def current_catalog
+
+  end
+
   def sections
     uri = "https://sis.rpi.edu/reg/rocs/YACS_#{SEMESTER}.xml"
     sections = Nokogiri::XML(open(uri)).xpath("//CourseDB/SECTION")
