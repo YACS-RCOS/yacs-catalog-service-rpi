@@ -7,17 +7,36 @@ module Catalog
       department_code: 358,
       number: 360,
       name: 362
-    }.with_indifferent_access.freeze!
+    }.freeze
 
     def initialize api_url, api_key
       @api_url = api_url
       @api_key = api_key
-      @catalog_id = current_catalog_id
     end
 
-    def courses
+    def load
+      @courses = courses current_catalog_id
+    end
+
+    def find department_code, number
+      @courses[department_code.to_s][number.to_s]
+    end
+
+    private
+
+    def course_ids catalog_id
+      params = {
+        method: listing,
+        catalog_id: catalog_id,
+        'options[limit]': 0
+      }
+      request(params).xpath('//result//id/text()').map(&:text)
+    end
+
+    def courses catalog_id
       mapped_courses = {}
-      response = request(methods: :getCourses, 'ids[]': course_ids))
+      ids = course_ids catalog_id
+      response = request(methods: :getCourses, 'ids[]': ids))
       response.xpath('//course/content').each do |course_xml|
         course = ACALOG_FIELD_TYPES.map do |k, v|
           [k, course_xml.xpath("/field[type = 'acalog-field-#{v}']")]
@@ -25,14 +44,8 @@ module Catalog
         mapped_courses[course[:department_code]] ||= {}
         mapped_courses[course[:department_code]][course[:number]] = course
       end
+      mapped_courses
     end
-
-    def course_ids
-      params = { method: listing, catalog_id: current_catalog_id, 'options[limit]': 0 }
-      request(params).xpath('//result//id/text()').map(&:text)
-    end
-
-    private
 
     def current_catalog_id
       node = request(method: :getCatalog).
