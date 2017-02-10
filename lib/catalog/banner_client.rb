@@ -37,14 +37,6 @@ module Catalog
       end
     end
 
-    def departments
-      schools.map {|s| s[:departments]}.flatten
-    end
-
-    def schools
-      YAML.load(File.open('config/schools.yml'))[:schools]
-    end
-
     private
 
     def extract_sections course
