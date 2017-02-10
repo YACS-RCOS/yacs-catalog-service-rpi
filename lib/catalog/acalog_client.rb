@@ -14,8 +14,8 @@ module Catalog
       @api_key = api_key
     end
 
-    def load
-      @courses = courses current_catalog_id
+    def load_current_catalog
+      @courses = courses(current_catalog_id).freeze
     end
 
     def find department_code, number
@@ -54,7 +54,8 @@ module Catalog
     end
 
     def request params
-      uri = "http://#{@url}/v1/content?key=#{api_key}&format=xml&#{params.to_query}"
+      params = params.merge({ key: @api_key, format: :xml })
+      uri = "http://#{@api_url}/v1/content?#{params.to_query}"
       Nokogiri::HTML(open(uri))
     end
   end
