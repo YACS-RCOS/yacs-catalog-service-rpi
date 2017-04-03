@@ -1,10 +1,9 @@
 source 'https://rubygems.org'
 
-ruby '2.3.3'
+ruby '2.4.0'
 
 gem 'rake'
 gem 'sinatra'
 gem 'nokogiri'
-gem 'open-uri'
-gem 'yaml'
-gem 'active_support'
+gem 'activesupport'
+gem 'pry'

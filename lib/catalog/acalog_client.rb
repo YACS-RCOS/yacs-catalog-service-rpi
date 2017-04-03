@@ -1,3 +1,4 @@
+require 'active_support'
 require 'active_support/core_ext'
 
 module Catalog
@@ -36,7 +37,7 @@ module Catalog
     def courses catalog_id
       mapped_courses = {}
       ids = course_ids catalog_id
-      response = request(methods: :getCourses, 'ids[]': ids))
+      response = request(methods: :getCourses, 'ids[]': ids)
       response.xpath('//course/content').each do |course_xml|
         course = ACALOG_FIELD_TYPES.map do |k, v|
           [k, course_xml.xpath("/field[type = 'acalog-field-#{v}']")]

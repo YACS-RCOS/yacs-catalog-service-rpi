@@ -10,7 +10,6 @@ module Catalog
     end
 
     def sections
-      # uri = "https://sis.rpi.edu/reg/rocs/YACS_#{@semester}.xml"
       sections = Nokogiri::XML(open(@sections_uri)).xpath("//CourseDB/SECTION")
       sections.map do |xml|
         section = xml.to_h.select!{|s| %w(crn num students seats).include?(s)}
@@ -19,7 +18,6 @@ module Catalog
     end
 
     def courses
-      # uri = "https://sis.rpi.edu/reg/rocs/#{@semester}.xml"
       courses = Nokogiri::XML(open(@courses_uri)).xpath('//COURSE')
       courses.map do |xml|
         course = xml.to_h.map do |k, v|
