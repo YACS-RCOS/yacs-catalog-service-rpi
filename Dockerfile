@@ -1,6 +1,6 @@
 FROM ruby:2.4.0-alpine
 
-ENV SEMSTER 201701
+ENV SEMESTER 201701
 
 ENV INSTALL_PATH /usr/src/app/
 RUN mkdir -p $INSTALL_PATH

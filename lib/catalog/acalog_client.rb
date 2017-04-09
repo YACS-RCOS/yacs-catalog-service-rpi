@@ -27,36 +27,45 @@ module Catalog
 
     def course_ids catalog_id
       params = {
-        method: listing,
-        catalog_id: catalog_id,
+        method: :listing,
+        catalog: catalog_id,
         'options[limit]': 0
       }
-      request(params).xpath('//result//id/text()').map(&:text)
+      request('search/courses', params).xpath('//result//id/text()').map(&:text)
     end
 
     def courses catalog_id
+      params = {
+        method: :getItems,
+        type: :courses,
+        catalog: catalog_id
+      }
       mapped_courses = {}
-      ids = course_ids catalog_id
-      response = request(methods: :getCourses, 'ids[]': ids)
-      response.xpath('//course/content').each do |course_xml|
-        course = ACALOG_FIELD_TYPES.map do |k, v|
-          [k, course_xml.xpath("/field[type = 'acalog-field-#{v}']")]
-        end.to_h
-        mapped_courses[course[:department_code]] ||= {}
-        mapped_courses[course[:department_code]][course[:number]] = course
+      all_ids = course_ids catalog_id
+      all_ids.each_slice(100) do |ids|
+        response = request('content', params.merge(ids: ids))
+        response.xpath('//course/content').each do |course_xml|
+          course = ACALOG_FIELD_TYPES.map do |k, v|
+            [k, course_xml.xpath("/field[type = 'acalog-field-#{v}']")]
+          end.to_h
+          mapped_courses[course[:department_code]] ||= {}
+          mapped_courses[course[:department_code]][course[:number]] = course
+        end
       end
       mapped_courses
     end
 
     def current_catalog_id
-      node = request(method: :getCatalog).
+      node = request('content', method: :getCatalogs).
         xpath('//catalog[state/published = "Yes" and state/archived = "No"]/@id')
+      puts node 
       @catalog_id = /acalog-catalog-(?<id>\d+)/.match(node.text)[:id].to_i
     end
 
-    def request params
+    def request path, params
       params = params.merge({ key: @api_key, format: :xml })
-      uri = "http://#{@api_url}/v1/content?#{params.to_query}"
+      uri = "#{@api_url}/v1/#{path}?#{params.to_query}"
+      puts uri
       Nokogiri::HTML(open(uri))
     end
   end
