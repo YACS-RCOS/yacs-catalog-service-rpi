@@ -42,7 +42,7 @@ module Catalog
       }
       mapped_courses = {}
       all_ids = course_ids catalog_id
-      all_ids.each_slice(100) do |ids|
+      all_ids.each_slice(200) do |ids|
         response = request('content', params.merge(ids: ids))
         response.xpath('//course/content').each do |course_xml|
           course = ACALOG_FIELD_TYPES.map do |k, v|
@@ -58,14 +58,12 @@ module Catalog
     def current_catalog_id
       node = request('content', method: :getCatalogs).
         xpath('//catalog[state/published = "Yes" and state/archived = "No"]/@id')
-      puts node 
       @catalog_id = /acalog-catalog-(?<id>\d+)/.match(node.text)[:id].to_i
     end
 
     def request path, params
       params = params.merge({ key: @api_key, format: :xml })
       uri = "#{@api_url}/v1/#{path}?#{params.to_query}"
-      puts uri
       Nokogiri::HTML(open(uri))
     end
   end

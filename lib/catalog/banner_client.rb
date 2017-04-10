@@ -1,5 +1,7 @@
 require 'nokogiri'
 require 'open-uri'
+require 'openssl'
+require 'net/http'
 
 module Catalog
   class BannerClient
@@ -10,7 +12,18 @@ module Catalog
     end
 
     def sections
-      sections = Nokogiri::XML(open(@sections_uri)).xpath("//CourseDB/SECTION")
+
+      url = URI.parse(@sections_uri)
+      req = Net::HTTP::Get.new(url.path)
+      sock = Net::HTTP.new(url.host, 443)
+      sock.use_ssl = true
+      sock.ssl_version="SSLv3"
+      sock.start do |http|
+        response = http.request(req)
+      end
+
+      #sections = Net::HTTP.get(URI(@sections_uri)).xpath('//CourseDB/SECTION')
+      #sections = Nokogiri::XML(open(@sections_uri, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})).xpath("//CourseDB/SECTION")
       sections.map do |xml|
         section = xml.to_h.select!{|s| %w(crn num students seats).include?(s)}
         section.map{|k, v| [k == 'students' ? 'seats_taken' : k, v]}.to_h
@@ -18,7 +31,7 @@ module Catalog
     end
 
     def courses
-      courses = Nokogiri::XML(open(@courses_uri)).xpath('//COURSE')
+      courses = Nokogiri::XML(open(@courses_uri, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})).xpath('//COURSE')
       courses.map do |xml|
         course = xml.to_h.map do |k, v|
           case k
