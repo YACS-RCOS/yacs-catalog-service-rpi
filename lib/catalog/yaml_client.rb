@@ -1,3 +1,5 @@
+require 'YAML'
+
 module Catalog
   class YamlClient
     def initialize filename='config/schools.yml'
