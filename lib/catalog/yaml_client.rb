@@ -1,9 +1,10 @@
-require 'YAML'
+require 'yaml'
 
 module Catalog
   class YamlClient
     def initialize filename='config/schools.yml'
       @filename = filename
+      @schools
     end
 
     def departments
@@ -11,7 +12,9 @@ module Catalog
     end
 
     def schools
-      YAML.load(File.open(@filename))[:schools]
+      @schools = YAML.load_file(@filename)
+      puts @schools.inspect
+      YAML.dump(@filename)
     end
   end
 end

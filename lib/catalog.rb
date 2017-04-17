@@ -21,7 +21,6 @@ module Catalog
     end
 
     def courses
-      puts 'courses'
       @banner_client.courses.map do |course|
         acalog_course = @acalog_client.find(course[:department][:code], course[:number])
         course.merge(acalog_course.slice(:name, :description))
@@ -29,12 +28,10 @@ module Catalog
     end
 
     def departments
-      puts 'dep'
       @yaml_client.departments
     end
 
     def schools
-      puts 'scho'
       @yaml_client.schools
     end
   end
