@@ -1,4 +1,4 @@
-FROM ruby:2.4.0-alpine
+FROM ruby:2.4.0
 
 ENV SEMESTER 201701
 
@@ -8,7 +8,7 @@ RUN mkdir -p $INSTALL_PATH
 WORKDIR $INSTALL_PATH
 COPY . $INSTALL_PATH
 
-RUN apk add --update ruby-dev build-base openssl openssl-dev ca-certificates
+# RUN apt-get install ruby-dev build-base openssl openssl-dev ca-certificates 
 
 RUN bundle install
 
