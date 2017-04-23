@@ -4,7 +4,7 @@ require './lib/catalog/yaml_client'
 
 module Catalog
   BANNER_SECTIONS_URI = "https://sis.rpi.edu/reg/rocs/YACS_#{ENV['SEMESTER']}.xml"
-  BANNER_COURSES_URI = "https://sis.rpi.edu/reg/rocs/#{ENV['SEMESTER']}.xml"
+  BANNER_COURSES_URI = "https://sis.rpi.edu/reg/rocs/201701.xml"
   ACALOG_API_URI = "http://rpi.apis.acalog.com"
   ACALOG_API_KEY = "3eef8a28f26fb2bcc514e6f1938929a1f9317628"
 

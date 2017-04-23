@@ -14,10 +14,11 @@ module Catalog
     def sections
 
       url = URI.parse(@sections_uri)
-      req = Net::HTTP::Get.new(url.path)
+      req = Net::HTTP::get.new(url.path)
       sock = Net::HTTP.new(url.host, 443)
       sock.use_ssl = true
       sock.ssl_version="SSLv3"
+      puts url
       sock.start do |http|
         response = http.request(req)
       end
@@ -31,7 +32,22 @@ module Catalog
     end
 
     def courses
-      courses = Nokogiri::XML(open(@courses_uri, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})).xpath('//COURSE')
+
+      url = URI.parse("https://sis.rpi.edu/reg/rocs/201701.xml")
+      puts url
+      req = Net::HTTP::Get.new(url.path)
+      puts req.inspect
+      sock = Net::HTTP.new(url.host, 443)
+      puts sock.inspect
+      sock.use_ssl = true
+      sock.ssl_version = "SSLv3"
+      puts sock.ssl_version
+      sock.start do |http|
+        puts sock.inspect
+        response = http.request(req)
+        puts response.inspect
+      end
+
       courses.map do |xml|
         course = xml.to_h.map do |k, v|
           case k
