@@ -1,7 +1,5 @@
 require 'nokogiri'
-require 'open-uri'
-require 'openssl'
-require 'net/http'
+require 'httpclient'
 
 module Catalog
   class BannerClient
@@ -9,22 +7,11 @@ module Catalog
     def initialize courses_uri, sections_uri
       @courses_uri = courses_uri
       @sections_uri = sections_uri
+      @http_client = HTTPClient.new
     end
 
     def sections
-
-      url = URI.parse(@sections_uri)
-      req = Net::HTTP::get.new(url.path)
-      sock = Net::HTTP.new(url.host, 443)
-      sock.use_ssl = true
-      sock.ssl_version="SSLv3"
-      puts url
-      sock.start do |http|
-        response = http.request(req)
-      end
-
-      #sections = Net::HTTP.get(URI(@sections_uri)).xpath('//CourseDB/SECTION')
-      #sections = Nokogiri::XML(open(@sections_uri, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})).xpath("//CourseDB/SECTION")
+      sections = get_xml(@sections_uri).xpath('//CourseDB/SECTION')
       sections.map do |xml|
         section = xml.to_h.select!{|s| %w(crn num students seats).include?(s)}
         section.map{|k, v| [k == 'students' ? 'seats_taken' : k, v]}.to_h
@@ -32,22 +19,7 @@ module Catalog
     end
 
     def courses
-
-      url = URI.parse("https://sis.rpi.edu/reg/rocs/201701.xml")
-      puts url
-      req = Net::HTTP::Get.new(url.path)
-      puts req.inspect
-      sock = Net::HTTP.new(url.host, 443)
-      puts sock.inspect
-      sock.use_ssl = true
-      sock.ssl_version = "SSLv3"
-      puts sock.ssl_version
-      sock.start do |http|
-        puts sock.inspect
-        response = http.request(req)
-        puts response.inspect
-      end
-
+      courses = get_xml(@courses_uri).xpath('//COURSE')
       courses.map do |xml|
         course = xml.to_h.map do |k, v|
           case k
@@ -65,6 +37,10 @@ module Catalog
     end
 
     private
+
+    def get_xml uri
+      Nokogiri::XML(@http_client.get(uri).body)
+    end
 
     def extract_sections course
       course.xpath('SECTION').map do |xml|
