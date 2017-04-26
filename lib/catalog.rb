@@ -22,8 +22,10 @@ module Catalog
 
     def courses
       @banner_client.courses.map do |course|
-        acalog_course = @acalog_client.find(course[:department][:code], course[:number])
-        course.merge(acalog_course.slice(:name, :description))
+        # There's a bug in AcalogClient#find
+        # acalog_course = @acalog_client.find(course[:department][:code], course[:number])
+        # course.merge(acalog_course.slice(:name, :description))
+        course
       end
     end
 
