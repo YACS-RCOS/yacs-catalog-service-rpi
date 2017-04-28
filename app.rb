@@ -11,5 +11,3 @@ catalog = Catalog::Aggregator.new
   	json resource => catalog.send(resource)
   end
 end
-
-
