@@ -23,7 +23,10 @@ module Catalog
     def courses
       @banner_client.courses.map do |course|
         acalog_course = @acalog_client.find(course[:department][:code], course[:number])
-        course.merge(acalog_course.slice(:name, :description))
+        puts "#{course[:name]} -> #{acalog_course[:name]}" if acalog_course && course && (course[:name] != acalog_course[:name])
+        merged_course = course
+        merged_course.merge(acalog_course.slice(:name, :description)) if acalog_course
+        merged_course
       end
     end
 

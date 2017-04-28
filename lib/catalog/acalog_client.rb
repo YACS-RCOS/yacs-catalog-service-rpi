@@ -20,7 +20,7 @@ module Catalog
     end
 
     def find department_code, number
-      @courses[department_code.to_s][number.to_s]
+      @courses.dig(department_code.to_s, number.to_s)
     end
 
     private
@@ -38,15 +38,17 @@ module Catalog
       params = {
         method: :getItems,
         type: :courses,
-        catalog: catalog_id
+        catalog: catalog_id,
+        'options[full]': 1
       }
       mapped_courses = {}
+      # mapped_courses.default = {}
       all_ids = course_ids catalog_id
       all_ids.each_slice(200) do |ids|
         response = request('content', params.merge(ids: ids))
         response.xpath('//course/content').each do |course_xml|
           course = ACALOG_FIELD_TYPES.map do |k, v|
-            [k, course_xml.xpath("/field[type = 'acalog-field-#{v}']")]
+            [k, course_xml.css("field[type = \"acalog-field-#{v}\"]").text]
           end.to_h
           mapped_courses[course[:department_code]] ||= {}
           mapped_courses[course[:department_code]][course[:number]] = course
@@ -64,7 +66,7 @@ module Catalog
     def request path, params
       params = params.merge({ key: @api_key, format: :xml })
       uri = "#{@api_url}/v1/#{path}?#{params.to_query}"
-      Nokogiri::HTML(open(uri))
+      Nokogiri::HTML(open(uri), nil, 'utf-8')
     end
   end
 end

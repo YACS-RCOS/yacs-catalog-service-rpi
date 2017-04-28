@@ -1,5 +1,6 @@
 require 'nokogiri'
 require 'httpclient'
+require 'pry'
 
 module Catalog
   class BannerClient
@@ -21,16 +22,16 @@ module Catalog
     def courses
       courses = get_xml(@courses_uri).xpath('//COURSE')
       courses.map do |xml|
-        course = xml.to_h.map do |k, v|
+        course = xml.to_h.symbolize_keys.map do |k, v|
           case k
           when :credmin then [:min_credits, v]
           when :credmax then [:max_credits, v]
           when :num     then [:number, v]
           when :name    then [:name, v.titleize]
           when :dept    then [:department, { code: v }]
-          else nil
+          else [nil, nil]
           end
-        end.to_h.compact!
+        end.to_h.compact
         course[:sections] = extract_sections xml
         course
       end
@@ -44,15 +45,15 @@ module Catalog
 
     def extract_sections course
       course.xpath('SECTION').map do |xml|
-        section = xml.to_h.map do |k, v|
+        section = xml.to_h.symbolize_keys.map do |k, v|
           case k
           when :num       then [:name, v]
           when :crn       then [:crn, v]
           when :seats     then [:seats, v]
           when :students  then [:seats_taken, v]
-          else nil
+          else [nil, nil]
           end
-        end.to_h.compact!
+        end.to_h.compact
         section[:instructors]   = []
         section[:periods_day]   = []
         section[:periods_start] = []
@@ -70,7 +71,8 @@ module Catalog
           end
         end
         section[:num_periods] = section[:periods_day].count
-        section[:instructors].uniq!.delete 'Staff'
+        section[:instructors].uniq!
+        section[:instructors].delete 'Staff'
         section
       end
     end
