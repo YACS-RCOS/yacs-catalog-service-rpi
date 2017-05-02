@@ -3,8 +3,8 @@ require './lib/catalog/banner_client'
 require './lib/catalog/yaml_client'
 
 module Catalog
-  BANNER_SECTIONS_URI = "https://sis.rpi.edu/reg/rocs/YACS_#{ENV['SEMESTER']}.xml"
-  BANNER_COURSES_URI = "https://sis.rpi.edu/reg/rocs/201701.xml"
+  BANNER_SECTIONS_URI = "https://sis.rpi.edu/reg/rocs/YACS_201709.xml"
+  BANNER_COURSES_URI = "https://sis.rpi.edu/reg/rocs/201709.xml"
   ACALOG_API_URI = "http://rpi.apis.acalog.com"
   ACALOG_API_KEY = "3eef8a28f26fb2bcc514e6f1938929a1f9317628"
 
@@ -23,7 +23,6 @@ module Catalog
     def courses
       @banner_client.courses.map do |course|
         acalog_course = @acalog_client.find(course[:department][:code], course[:number])
-        puts "#{course[:name]} -> #{acalog_course[:name]}" if acalog_course && course && (course[:name] != acalog_course[:name])
         merged_course = course
         merged_course.merge(acalog_course.slice(:name, :description)) if acalog_course
         merged_course
