@@ -56,18 +56,19 @@ module Catalog
         end.to_h.compact
         section[:instructors]   = []
         section[:periods_day]   = []
+        section[:periods_start] = []
+        section[:periods_end]   = []
+        section[:periods_type]  = []
+        section[:num_periods]   = []
         xml.xpath('PERIOD').each do |pxml|
           section[:instructors].concat(pxml[:instructor].strip.split(/\//))
-          puts "Days"
+          section[:num_periods] << pxml.element_children.count
           pxml.element_children.each do |day|
-            puts 'Inner'
-            puts day.text
-            section[:periods_day] = day.text.to_i + 1
-            section[:periods_start] = pxml.attribute('start')
-            section[:periods_end] = pxml.attribute('end')
-            section[:periods_type] = pxml.attribute('type')
+            section[:periods_day] << day.text.to_i + 1
+            section[:periods_start] <<pxml.attribute('start').to_s
+            section[:periods_end] << pxml.attribute('end').to_s
+            section[:periods_type] << pxml.attribute('type').to_s
           end
-          section[:num_periods] = pxml.element_children.count
         end
         section[:instructors].uniq!
         section[:instructors].delete 'Staff'
