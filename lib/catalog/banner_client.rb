@@ -54,25 +54,36 @@ module Catalog
           else [nil, nil]
           end
         end.to_h.compact
+        section[:periods] = extract_periods xml
         section[:instructors]   = []
-        section[:periods_day]   = []
-        section[:periods_start] = []
-        section[:periods_end]   = []
-        section[:periods_type]  = []
-        section[:num_periods]   = []
         xml.xpath('PERIOD').each do |pxml|
           section[:instructors].concat(pxml[:instructor].strip.split(/\//))
-          section[:num_periods] << pxml.element_children.count
-          pxml.element_children.each do |day|
-            section[:periods_day] << day.text.to_i + 1
-            section[:periods_start] <<pxml.attribute('start').to_s
-            section[:periods_end] << pxml.attribute('end').to_s
-            section[:periods_type] << pxml.attribute('type').to_s
-          end
         end
         section[:instructors].uniq!
         section[:instructors].delete 'Staff'
         section
+      end
+    end
+
+    def extract_periods section
+      section.xpath('PERIOD').map do |pxml|
+        period = pxml.to_h.symbolize_keys.map do |k,v|
+          case k
+          when :instructor 
+            v.strip.split(/\//)
+            [:instructor, v.strip.split(/\//)]
+          when :type        then [:type, v]
+          when :start       then [:start, v]
+          when :end         then [:end, v]
+          when :location    then [:location, v]
+          else [nil, nil]
+          end
+        end.to_h.compact
+        period[:days] = []
+        pxml.element_children.each do |day|
+          period[:days] << day.text.to_i+1
+        end
+        period
       end
     end
   end
