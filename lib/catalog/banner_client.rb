@@ -54,10 +54,17 @@ module Catalog
           else [nil, nil]
           end
         end.to_h.compact
-        section[:periods] = extract_periods xml
+        #section[:periods] = extract_periods xml
+
         section[:instructors]   = []
+        section[:periods] = []
         xml.xpath('PERIOD').each do |pxml|
           section[:instructors].concat(pxml[:instructor].strip.split(/\//))
+
+          pxml.element_children.each do |day|
+            section[:periods] << extract_periods(pxml, day)
+          end
+
         end
         section[:instructors].uniq!
         section[:instructors].delete 'Staff'
@@ -65,26 +72,22 @@ module Catalog
       end
     end
 
-    def extract_periods section
-      section.xpath('PERIOD').map do |pxml|
-        period = pxml.to_h.symbolize_keys.map do |k,v|
-          case k
-          when :instructor 
-            v.strip.split(/\//)
-            [:instructor, v.strip.split(/\//)]
-          when :type        then [:type, v]
-          when :start       then [:start, v]
-          when :end         then [:end, v]
-          when :location    then [:location, v]
-          else [nil, nil]
-          end
-        end.to_h.compact
-        period[:days] = []
-        pxml.element_children.each do |day|
-          period[:days] << day.text.to_i+1
+    def extract_periods pxml, day
+      period = pxml.to_h.symbolize_keys.map do |k,v|
+        case k
+        when :instructor 
+          v.strip.split(/\//)
+          [:instructor, v.strip.split(/\//)]
+        when :type        then [:type, v]
+        when :start       then [:start, v]
+        when :end         then [:end, v]
+        when :location    then [:location, v]
+        else [nil, nil]
         end
-        period
-      end
+      end.to_h.compact
+
+      period[:day] = day.text.to_i+1
+      period
     end
   end
 end
