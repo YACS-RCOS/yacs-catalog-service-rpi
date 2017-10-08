@@ -12,11 +12,9 @@ module Catalog
     end
 
     def sections
-      sections = get_xml(@sections_uri).xpath('//CourseDB/SECTION')
-      sections.map do |xml|
-        section = xml.to_h.select!{|s| %w(crn num students seats).include?(s)}
-        section.map{|k, v| [k == 'students' ? 'seats_taken' : k, v]}.to_h
-      end
+      # sections = get_xml(@sections_uri).xpath('//SECTION')
+      # sections.map { |xml| puts xml; parse_section xml }
+      courses.map { |c| c[:sections] }.flatten
     end
 
     def courses
@@ -32,7 +30,9 @@ module Catalog
           else [nil, nil]
           end
         end.to_h.compact
-        course[:sections] = extract_sections xml
+        course[:sections] = xml.xpath('SECTION').map do |section_xml|
+          parse_section section_xml
+        end
         course
       end
     end
@@ -43,8 +43,8 @@ module Catalog
       Nokogiri::XML(@http_client.get(uri).body)
     end
 
-    def extract_sections course
-      course.xpath('SECTION').map do |xml|
+    def parse_section xml
+      # course.xpath('SECTION').map do |xml|
         section = xml.to_h.symbolize_keys.map do |k, v|
           case k
           when :num       then [:name, v]
@@ -69,15 +69,15 @@ module Catalog
         section[:instructors].uniq!
         section[:instructors].delete 'Staff'
         section
-      end
+      # end
     end
 
     def extract_periods pxml, day
       period = pxml.to_h.symbolize_keys.map do |k,v|
         case k
-        when :instructor 
-          v.strip.split(/\//)
-          [:instructor, v.strip.split(/\//)]
+        # when :instructor 
+        #   v.strip.split(/\//)
+        #   [:instructor, v.strip.split(/\//)]
         when :type        then [:type, v]
         when :start       then [:start, v]
         when :end         then [:end, v]
