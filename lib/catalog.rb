@@ -13,7 +13,7 @@ module Catalog
       @yaml_client = YamlClient.new
       @banner_client = BannerClient.new BANNER_COURSES_URI, BANNER_SECTIONS_URI
       @acalog_client = AcalogClient.new ACALOG_API_URI, ACALOG_API_KEY
-      # @acalog_client.load_current_catalog
+      @acalog_client.load_current_catalog
     end
 
     def sections 
